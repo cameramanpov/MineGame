@@ -15,7 +15,7 @@ body {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(5, 50px);
+    grid-template-columns: repeat(6, 50px);
     grid-gap: 5px;
     margin-bottom: 20px;
 }
@@ -33,6 +33,27 @@ body {
     color: white;
 }
 
+.block-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.block-buttons button {
+    width: 50px;
+    height: 50px;
+    margin: 0 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.block-buttons .red { background-color: #FF0000; }
+.block-buttons .blue { background-color: #0000FF; }
+.block-buttons .green { background-color: #00FF00; }
+.block-buttons .yellow { background-color: #FFFF00; }
+.block-buttons .black { background-color: #000000; }
+.block-buttons .white { background-color: #FFFFFF; }
+
 .green {
     background-color: #57A773;
 }
@@ -43,13 +64,6 @@ body {
 
 .gray {
     background-color: #555;
-}
-
-#word-input {
-    font-size: 18px;
-    padding: 5px;
-    text-align: center;
-    width: 100px;
 }
 
 button {
