@@ -1,48 +1,80 @@
-const words = ['block', 'creep', 'stone', 'grass', 'apple']; // Liste de mots
-let currentWord = words[Math.floor(Math.random() * words.length)];
+const blocks = ['red', 'blue', 'green', 'yellow', 'black', 'white']; // Liste de blocs
+let currentCombination = [];
+let userCombination = [];
 let attempts = 0;
 
-document.getElementById('submit-btn').addEventListener('click', submitWord);
+// Générer une combinaison aléatoire de 6 blocs
+function generateCombination() {
+    currentCombination = [];
+    for (let i = 0; i < 6; i++) {
+        const randomBlock = blocks[Math.floor(Math.random() * blocks.length)];
+        currentCombination.push(randomBlock);
+    }
+}
+
+generateCombination();
+
+// Afficher les boutons pour chaque bloc
+const blockButtonsContainer = document.getElementById('block-buttons');
+blocks.forEach(block => {
+    const button = document.createElement('button');
+    button.className = block;
+    button.addEventListener('click', () => addBlockToUserCombination(block));
+    blockButtonsContainer.appendChild(button);
+});
+
+function addBlockToUserCombination(block) {
+    if (userCombination.length < 6) {
+        userCombination.push(block);
+        updateGrid();
+    }
+}
+
+function updateGrid() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = ''; // Clear previous content
+    userCombination.forEach(block => {
+        const blockDiv = document.createElement('div');
+        blockDiv.className = block;
+        grid.appendChild(blockDiv);
+    });
+}
+
+document.getElementById('submit-btn').addEventListener('click', submitCombination);
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 
-function submitWord() {
-    const input = document.getElementById('word-input').value.toLowerCase();
-    if (input.length !== 5) {
-        showMessage('Le mot doit contenir 5 lettres.');
+function submitCombination() {
+    if (userCombination.length !== 6) {
+        showMessage('Sélectionnez 6 blocs.');
         return;
     }
 
     attempts++;
-    updateGrid(input);
-    if (input === currentWord) {
+    checkCombination();
+    if (userCombination.join('') === currentCombination.join('')) {
         showMessage('Gagné! Bravo!');
         document.getElementById('new-game-btn').style.display = 'block';
     } else if (attempts >= 6) {
-        showMessage(`Perdu! Le mot était : ${currentWord}`);
+        showMessage(`Perdu! La combinaison était : ${currentCombination.join(', ')}`);
         document.getElementById('new-game-btn').style.display = 'block';
     } else {
-        document.getElementById('word-input').value = '';
+        userCombination = [];
+        updateGrid();
     }
 }
 
-function updateGrid(word) {
+function checkCombination() {
     const grid = document.getElementById('grid');
-    const row = document.createElement('div');
-    for (let i = 0; i < word.length; i++) {
-        const letterBlock = document.createElement('div');
-        letterBlock.textContent = word[i];
-
-        if (word[i] === currentWord[i]) {
-            letterBlock.classList.add('green');
-        } else if (currentWord.includes(word[i])) {
-            letterBlock.classList.add('yellow');
+    for (let i = 0; i < userCombination.length; i++) {
+        const blockDiv = grid.children[i];
+        if (userCombination[i] === currentCombination[i]) {
+            blockDiv.classList.add('green');
+        } else if (currentCombination.includes(userCombination[i])) {
+            blockDiv.classList.add('yellow');
         } else {
-            letterBlock.classList.add('gray');
+            blockDiv.classList.add('gray');
         }
-
-        row.appendChild(letterBlock);
     }
-    grid.appendChild(row);
 }
 
 function showMessage(message) {
@@ -50,10 +82,10 @@ function showMessage(message) {
 }
 
 function startNewGame() {
-    currentWord = words[Math.floor(Math.random() * words.length)];
+    generateCombination();
+    userCombination = [];
     attempts = 0;
     document.getElementById('grid').innerHTML = '';
-    document.getElementById('word-input').value = '';
     document.getElementById('message').textContent = '';
     document.getElementById('new-game-btn').style.display = 'none';
 }
